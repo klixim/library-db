@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Админ-панель</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">Городская Библиотека</a>
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item"><a class="nav-link" href="/">Каталог</a></li>
+                <li class="nav-item reader-only" style="display: none;"><a class="nav-link" href="/profile.html">Личный кабинет</a></li>
+                <li class="nav-item admin-only" style="display: none;"><a class="nav-link active" href="/admin.html">Админ-панель</a></li>
+            </ul>
+            <div class="d-flex align-items-center">
+                <button id="loginBtn" class="btn btn-outline-light" data-bs-toggle="modal" data-bs-target="#loginModal">Войти</button>
+                <div id="userInfo" class="text-light d-none"><span class="me-3">Роль: <strong id="userRole"></strong></span><button id="logoutBtn" class="btn btn-sm btn-danger">Выйти</button></div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-12 mb-5">
+                <h2>Управление выдачей / возвратом</h2>
+                <div class="card shadow-sm mb-3">
+                    <div class="card-body">
+                        <ul class="nav nav-pills mb-3" id="loanTabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="issue-tab" data-bs-toggle="pill" data-bs-target="#issue-book" type="button" role="tab">Выдать книгу</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="return-tab" data-bs-toggle="pill" data-bs-target="#return-book" type="button" role="tab">Вернуть книгу</button>
+                            </li>
+                        </ul>
+                        <div class="tab-content" id="loanTabsContent">
+                            <!-- Форма выдачи -->
+                            <div class="tab-pane fade show active" id="issue-book" role="tabpanel">
+                                <form id="issueForm">
+                                    <div class="row g-3 align-items-center">
+                                        <div class="col-auto"><label for="readerIdIssue" class="col-form-label">ID читателя:</label></div>
+                                        <div class="col-auto"><input type="number" id="readerIdIssue" class="form-control" required></div>
+                                        <div class="col-auto"><label for="bookIdIssue" class="col-form-label">ID книги:</label></div>
+                                        <div class="col-auto"><input type="number" id="bookIdIssue" class="form-control" required></div>
+                                        <div class="col-auto"><button type="submit" class="btn btn-primary">Выдать</button></div>
+                                    </div>
+                                    <div id="issueMessage" class="mt-2 fw-bold"></div>
+                                </form>
+                            </div>
+                            <!-- Форма возврата -->
+                            <div class="tab-pane fade" id="return-book" role="tabpanel">
+                                <form id="returnForm">
+                                    <div class="row g-3 align-items-center">
+                                        <div class="col-auto"><label for="bookIdReturn" class="col-form-label">ID книги:</label></div>
+                                        <div class="col-auto"><input type="number" id="bookIdReturn" class="form-control" required></div>
+                                        <div class="col-auto"><button type="submit" class="btn btn-success">Оформить возврат</button></div>
+                                    </div>
+                                    <div id="returnMessage" class="mt-2 fw-bold"></div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-12 mb-5">
+                <h2>Управление каталогом</h2>
+                <div class="card shadow-sm mb-3">
+                    <div class="card-body">
+                        <ul class="nav nav-pills mb-3" id="catalogTabs" role="tablist">
+                            <li class="nav-item" role="presentation"><button class="nav-link active" id="add-book-tab" data-bs-toggle="pill" data-bs-target="#add-book" type="button" role="tab">Добавить книгу</button></li>
+                            <li class="nav-item" role="presentation"><button class="nav-link" id="delete-book-tab" data-bs-toggle="pill" data-bs-target="#delete-book" type="button" role="tab">Удалить книгу</button></li>
+                        </ul>
+                        <div class="tab-content" id="catalogTabsContent">
+                            <div class="tab-pane fade show active" id="add-book" role="tabpanel">
+                                <form id="addBookForm">
+                                    <div class="row g-3 align-items-center">
+                                        <div class="col-md-4"><input type="text" id="bookTitle" class="form-control" placeholder="Название книги" required></div>
+                                        <div class="col-md-3"><input type="text" id="bookIsbn" class="form-control" placeholder="ISBN (уникальный)" required></div>
+                                        <div class="col-md-2"><input type="number" id="bookYear" class="form-control" placeholder="Год" required></div>
+                                        <div class="col-md-3"><button type="submit" class="btn btn-primary w-100">Добавить</button></div>
+                                    </div>
+                                    <div id="addBookMessage" class="mt-2 fw-bold"></div>
+                                </form>
+                            </div>
+                            <div class="tab-pane fade" id="delete-book" role="tabpanel">
+                                <form id="deleteBookForm">
+                                    <div class="row g-3 align-items-center">
+                                        <div class="col-auto"><label class="col-form-label">ID книги:</label></div>
+                                        <div class="col-auto"><input type="number" id="bookIdDelete" class="form-control" required></div>
+                                        <div class="col-auto"><button type="submit" class="btn btn-danger">Удалить книгу</button></div>
+                                    </div>
+                                    <div id="deleteBookMessage" class="mt-2 fw-bold"></div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-12 mb-5">
+                <h2>Управление читателями</h2>
+                <div class="card shadow-sm mb-3">
+                    <div class="card-body">
+                        <ul class="nav nav-pills mb-3" id="readerTabs" role="tablist">
+                            <li class="nav-item" role="presentation"><button class="nav-link active" id="add-reader-tab" data-bs-toggle="pill" data-bs-target="#add-reader" type="button" role="tab">Добавить читателя</button></li>
+                            <li class="nav-item" role="presentation"><button class="nav-link" id="delete-reader-tab" data-bs-toggle="pill" data-bs-target="#delete-reader" type="button" role="tab">Удалить читателя</button></li>
+                        </ul>
+                        <div class="tab-content" id="readerTabsContent">
+                            <div class="tab-pane fade show active" id="add-reader" role="tabpanel">
+                                <form id="addReaderForm">
+                                    <div class="row g-3 align-items-center">
+                                        <div class="col-md-4"><input type="text" id="readerName" class="form-control" placeholder="ФИО" required></div>
+                                        <div class="col-md-3"><input type="email" id="readerEmail" class="form-control" placeholder="Email (уникальный)" required></div>
+                                        <div class="col-md-3"><input type="text" id="readerPhone" class="form-control" placeholder="Телефон"></div>
+                                        <div class="col-md-2"><button type="submit" class="btn btn-primary w-100">Добавить</button></div>
+                                    </div>
+                                    <div id="addReaderMessage" class="mt-2 fw-bold"></div>
+                                </form>
+                            </div>
+                            <div class="tab-pane fade" id="delete-reader" role="tabpanel">
+                                <form id="deleteReaderForm">
+                                    <div class="row g-3 align-items-center">
+                                        <div class="col-auto"><label class="col-form-label">ID читателя:</label></div>
+                                        <div class="col-auto"><input type="number" id="readerIdDelete" class="form-control" required></div>
+                                        <div class="col-auto"><button type="submit" class="btn btn-danger">Удалить читателя</button></div>
+                                    </div>
+                                    <div id="deleteReaderMessage" class="mt-2 fw-bold"></div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-12 mb-5">
+                <h2>Список должников</h2>
+                <div class="table-responsive">
+                    <table class="table table-danger table-striped mt-3 shadow-sm">
+                        <thead><tr><th>Читатель</th><th>Контакты</th><th>Книга</th><th>Просрочено (дней)</th></tr></thead>
+                        <tbody id="debtors-table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col-md-12 mb-5">
+                <h2>Топ-3 популярных книг (Статистика)</h2>
+                <div class="table-responsive">
+                    <table class="table table-success table-striped mt-3 shadow-sm">
+                        <thead><tr><th>ID</th><th>Название книги</th><th>Кол-во выдач</th></tr></thead>
+                        <tbody id="stats-table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <h2>Список читателей (клиентов)</h2>
+                <div class="table-responsive">
+                    <table class="table table-info table-striped mt-3 shadow-sm">
+                        <thead><tr><th>ID</th><th>ФИО</th><th>Email</th><th>Телефон</th></tr></thead>
+                        <tbody id="readers-table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно авторизации -->
+    <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="loginModalLabel">Вход в систему</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="loginForm">
+                        <div class="mb-3"><label class="form-label">Логин</label><input type="text" class="form-control" id="username" required></div>
+                        <div class="mb-3"><label class="form-label">Пароль</label><input type="password" class="form-control" id="password" required></div>
+                        <div id="loginError" class="text-danger d-none mb-3">Неверный логин или пароль</div>
+                        <button type="submit" class="btn btn-primary w-100">Войти</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="scripts.js"></script>
+</body>
+</html>

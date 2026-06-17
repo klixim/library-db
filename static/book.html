@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Страница книги</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">Городская Библиотека</a>
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item"><a class="nav-link" href="/">Каталог</a></li>
+                <li class="nav-item reader-only" style="display: none;"><a class="nav-link" href="/profile.html">Личный кабинет</a></li>
+                <li class="nav-item admin-only" style="display: none;"><a class="nav-link" href="/admin.html">Админ-панель</a></li>
+            </ul>
+            <div class="d-flex align-items-center">
+                <button id="loginBtn" class="btn btn-outline-light" data-bs-toggle="modal" data-bs-target="#loginModal">Войти</button>
+                <div id="userInfo" class="text-light d-none">
+                    <span class="me-3">Роль: <strong id="userRole"></strong></span>
+                    <button id="logoutBtn" class="btn btn-sm btn-danger">Выйти</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <h2 id="bp-title" class="mb-3">Загрузка...</h2>
+        <div class="card shadow-sm p-4">
+            <p><strong>ID книги:</strong> <span id="bp-id"></span></p>
+            <p><strong>Статус:</strong> <span id="bp-status">Загрузка...</span></p>
+            <a href="/" class="btn btn-secondary mt-3 w-25">Назад в каталог</a>
+        </div>
+
+        <!-- Блок истории выдач: виден только для администратора -->
+        <div class="card shadow-sm p-4 mt-4 admin-only" style="display: none;">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h3>История выдач (только для администратора)</h3>
+                <button id="exportHistoryBtn" class="btn btn-success">Экспорт в CSV</button>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-striped table-hover border">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>ID выдачи</th>
+                            <th>Читатель</th>
+                            <th>Дата выдачи</th>
+                            <th>Дата возврата</th>
+                        </tr>
+                    </thead>
+                    <tbody id="book-history-body">
+                        <tr><td colspan="4" class="text-center">Загрузка...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно авторизации -->
+    <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="loginModalLabel">Вход в систему</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="loginForm">
+                        <div class="mb-3"><label class="form-label">Логин</label><input type="text" class="form-control" id="username" required></div>
+                        <div class="mb-3"><label class="form-label">Пароль</label><input type="password" class="form-control" id="password" required></div>
+                        <div id="loginError" class="text-danger d-none mb-3">Неверный логин или пароль</div>
+                        <button type="submit" class="btn btn-primary w-100">Войти</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="scripts.js"></script>
+</body>
+</html>
